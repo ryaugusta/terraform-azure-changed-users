@@ -19,6 +19,10 @@ inputs:
     description: 'Azure AD Group names (comma separated)'
     required: true
 
+outputs:
+  changes:
+    description: 'Changed users'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
