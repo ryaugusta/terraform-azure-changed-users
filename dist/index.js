@@ -47939,13 +47939,15 @@ const { Client } = __nccwpck_require__(2559);
 const { TokenCredentialAuthenticationProvider } = __nccwpck_require__(2798);
 const { ClientSecretCredential } = __nccwpck_require__(9516);
 const core = __nccwpck_require__(7334);
-const file = core.getInput('file');
+const filePath= core.getInput('file-path');
+const { exec } = __nccwpck_require__(2081);
+
 
 function run() {
-  const tenantId = core.getInput('tenant-id', {required: true});
-  const clientId = core.getInput('client-id', {required: true});
-  const clientSecret = core.getInput('client-secret', {required: true});
-  const groups = core.getInput('group-names', {required: true}).split(',');
+  const tenantId = core.getInput(process.env.ARM_TENANT_ID || 'tenant-id');
+  const clientId = core.getInput(process.env.ARM_CLIENT_ID || 'client-id');
+  const clientSecret = core.getInput(process.env.ARM_CLIENT_SECRET || 'client-secret') 
+  const groups = core.getInput('group-names').split(',');
   
   const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
   const authProvider = new TokenCredentialAuthenticationProvider(credential, { scopes: ['.default'] });
@@ -47989,13 +47991,45 @@ function run() {
         } 
     });
   });
+
+  terraform_show();
 }
 
 function get_changes(changeset, group_name) {
-    const plan = require(file)
+    const plan = require(filePath)
     return  plan.resource_changes
       .filter((change)=> change.address == `azuread_group.${group_name}`)[0]
       .change[changeset].members
+}
+
+function terraform_show() {
+  
+  exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    console.log('plan.json created');
+  });
+
+  exec('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    core.setOutput('tfplan', stdout);
+  });
+
+  exec("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    core.setOutput('tfplan', stdout);
+  });
 }
 
 run();

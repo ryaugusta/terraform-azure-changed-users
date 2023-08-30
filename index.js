@@ -9,9 +9,9 @@ const { exec } = require('child_process');
 
 
 function run() {
-  const tenantId = process.env.ARM_TENANT_ID || core.getInput('tenant-id');
-  const clientId = process.env.ARM_CLIENT_ID || core.getInput('client-id');
-  const clientSecret = process.env.ARM_CLIENT_SECRET || core.getInput('client-secret') 
+  const tenantId = core.getInput(process.env.ARM_TENANT_ID || 'tenant-id');
+  const clientId = core.getInput(process.env.ARM_CLIENT_ID || 'client-id');
+  const clientSecret = core.getInput(process.env.ARM_CLIENT_SECRET || 'client-secret') 
   const groups = core.getInput('group-names').split(',');
   
   const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
