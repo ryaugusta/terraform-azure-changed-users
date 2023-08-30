@@ -4,14 +4,14 @@ description: 'Read terraform plan JSON and comment changed users on pull request
 inputs:
   client-id:
     description: 'ClientId of the Azure Service principal created.'
-    required: true
+    required: false
   tenant-id:
     description: 'TenantId of the Azure Service principal created.'
-    required: true
+    required: false
   client-secret:
     description: 'ClientSecret of the Azure Service principal created.'
-    required: true
-  file:
+    required: false
+  file-path:
     description: 'terraform plan.json path and name.'
     required: false
     default: '${{ github.workspace }}/plan.json'
@@ -22,6 +22,8 @@ inputs:
 outputs:
   changes:
     description: 'Changed users'
+  tfplan:
+    description: 'Terraform plan output'
 
 runs:
   using: 'node16'

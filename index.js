@@ -4,13 +4,15 @@ const { Client } = require("@microsoft/microsoft-graph-client");
 const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials");
 const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
-const file = core.getInput('file');
+const filePath= core.getInput('file-path');
+const { exec } = require('child_process');
+
 
 function run() {
-  const tenantId = core.getInput('tenant-id', {required: true});
-  const clientId = core.getInput('client-id', {required: true});
-  const clientSecret = core.getInput('client-secret', {required: true});
-  const groups = core.getInput('group-names', {required: true}).split(',');
+  const tenantId = process.env.ARM_TENANT_ID || core.getInput('tenant-id');
+  const clientId = process.env.ARM_CLIENT_ID || core.getInput('client-id');
+  const clientSecret = process.env.ARM_CLIENT_SECRET || core.getInput('client-secret') 
+  const groups = core.getInput('group-names').split(',');
   
   const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
   const authProvider = new TokenCredentialAuthenticationProvider(credential, { scopes: ['.default'] });
@@ -54,13 +56,45 @@ function run() {
         } 
     });
   });
+
+  terraform_show();
 }
 
 function get_changes(changeset, group_name) {
-    const plan = require(file)
+    const plan = require(filePath)
     return  plan.resource_changes
       .filter((change)=> change.address == `azuread_group.${group_name}`)[0]
       .change[changeset].members
+}
+
+function terraform_show() {
+  
+  exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    console.log('plan.json created');
+  });
+
+  exec('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    core.setOutput('tfplan', stdout);
+  });
+
+  exec("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
+    if (err) {
+      core.setFailed(err.message);
+      return;
+    }
+    console.log(stdout);
+    core.setOutput('tfplan', stdout);
+  });
 }
 
 run();
