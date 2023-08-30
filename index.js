@@ -52,10 +52,12 @@ function run() {
             console.log(err);
           });
         } 
-        
-      console.log(value)
-      });
+      else {
+        console.log('No Changes Detected')
+        core.setOutput('changes', 'No Changes Detected');
+      }
     });
+  });
 }
 
 function get_changes(changeset, group_name) {
