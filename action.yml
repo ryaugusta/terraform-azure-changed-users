@@ -1,0 +1,28 @@
+name: Terraform Plan and Comment on PR
+description: 'Read terraform plan JSON and comment changed users on pull request'
+
+inputs:
+  client-id:
+    description: 'ClientId of the Azure Service principal created.'
+    required: false
+  tenant-id:
+    description: 'TenantId of the Azure Service principal created.'
+    required: false
+  client-secret:
+    description: 'ClientSecret of the Azure Service principal created.'
+    required: false
+  file:
+    description: 'terraform plan.json path and name.'
+    required: false
+    default: './plan.json'
+  group-names:
+    description: 'Azure AD Group names (comma separated)'
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'git-pull-request'
+  color: 'white'  

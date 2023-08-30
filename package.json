@@ -1,0 +1,19 @@
+{
+  "name": "terraform-plan-comment-pr",
+  "version": "1.0.0",
+  "description": "Digest information from terraform plan and add a comment to a PR.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "@azure/identity": "^3.3.0",
+    "@microsoft/microsoft-graph-client": "^3.0.6",
+    "diff": "^5.1.0",
+    "isomorphic-fetch": "^3.0.0"
+  }
+}
