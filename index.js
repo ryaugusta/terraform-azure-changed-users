@@ -33,6 +33,7 @@ function run() {
           .get()
           .then((res) => {
             console.log(res.displayName);
+            core.setOutput('changes', res.displayName);
           })
           .catch((err) => {
             console.log(err);
@@ -45,14 +46,14 @@ function run() {
           .get()
           .then((res) => {
             console.log(res.displayName);
+            core.setOutput('changes', res.displayName);
           })
           .catch((err) => {
             console.log(err);
           });
         } 
-
-        core.setOutput('changes', value);
-
+        
+      console.log(value)
       });
     });
 }
