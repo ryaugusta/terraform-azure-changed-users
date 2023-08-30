@@ -14,7 +14,7 @@ inputs:
   file:
     description: 'terraform plan.json path and name.'
     required: false
-    default: './plan.json'
+    default: '${{ github.workspace }}/plan.json'
   group-names:
     description: 'Azure AD Group names (comma separated)'
     required: true
