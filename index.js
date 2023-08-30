@@ -3,8 +3,8 @@ const diff = require('diff');
 const { Client } = require("@microsoft/microsoft-graph-client");
 const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials");
 const { ClientSecretCredential } = require("@azure/identity");
-const file = core.getInput('file');
 const core = require('@actions/core');
+const file = core.getInput('file');
 
 function run() {
   const tenantId = core.getInput('tenant-id');

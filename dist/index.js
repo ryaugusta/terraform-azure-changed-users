@@ -47938,8 +47938,8 @@ const diff = __nccwpck_require__(6447);
 const { Client } = __nccwpck_require__(2559);
 const { TokenCredentialAuthenticationProvider } = __nccwpck_require__(2798);
 const { ClientSecretCredential } = __nccwpck_require__(9516);
-const file = core.getInput('file');
 const core = __nccwpck_require__(7334);
+const file = core.getInput('file');
 
 function run() {
   const tenantId = core.getInput('tenant-id');
