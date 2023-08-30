@@ -1,4 +1,5 @@
 require("isomorphic-fetch");
+require("colors");
 const diff = require('diff');
 const { Client } = require("@microsoft/microsoft-graph-client");
 const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials");
@@ -32,7 +33,7 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(res.displayName);
+            console.log('+ '.green, res.displayName);
             core.setOutput('changes', res.displayName);
           })
           .catch((err) => {
@@ -45,7 +46,7 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(res.displayName);
+            console.log('- '.red, res.displayName);
             core.setOutput('changes', res.displayName);
           })
           .catch((err) => {
@@ -53,7 +54,7 @@ function run() {
           });
         } 
       else {
-        console.log('No Changes Detected')
+        console.log(`No Changes Detected for ${group_name}`)
         core.setOutput('changes', 'No Changes Detected');
       }
     });
