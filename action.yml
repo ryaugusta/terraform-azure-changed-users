@@ -4,13 +4,13 @@ description: 'Read terraform plan JSON and comment changed users on pull request
 inputs:
   client-id:
     description: 'ClientId of the Azure Service principal created.'
-    required: false
+    required: true
   tenant-id:
     description: 'TenantId of the Azure Service principal created.'
-    required: false
+    required: true
   client-secret:
     description: 'ClientSecret of the Azure Service principal created.'
-    required: false
+    required: true
   file:
     description: 'terraform plan.json path and name.'
     required: false

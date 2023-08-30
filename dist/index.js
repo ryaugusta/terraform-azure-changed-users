@@ -47942,9 +47942,9 @@ const core = __nccwpck_require__(7334);
 const file = core.getInput('file');
 
 function run() {
-  const tenantId = core.getInput('tenant-id');
-  const clientId = core.getInput('client-id');
-  const clientSecret = core.getInput('client-secret');
+  const tenantId = core.getInput('tenant-id', {required: true});
+  const clientId = core.getInput('client-id', {required: true});
+  const clientSecret = core.getInput('client-secret', {required: true});
   const groups = core.getInput('group-names', {required: true}).split(',');
   
   const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
