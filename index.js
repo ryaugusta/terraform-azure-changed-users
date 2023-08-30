@@ -53,10 +53,6 @@ function run() {
             console.log(err);
           });
         } 
-      else {
-        console.log(`No Changes Detected for ${group_name}`)
-        core.setOutput('changes', 'No Changes Detected');
-      }
     });
   });
 }
