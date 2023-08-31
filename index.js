@@ -21,6 +21,8 @@ function run() {
     authProvider,
   });
 
+  terraform_show();
+  
   groups.forEach((group_name) => { 
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
@@ -56,8 +58,6 @@ function run() {
         } 
     });
   });
-
-  terraform_show();
 }
 
 function get_changes(changeset, group_name) {
@@ -67,7 +67,7 @@ function get_changes(changeset, group_name) {
       .change[changeset].members
 }
 
-function terraform_show() {
+function terraform() {
   
   exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
     if (err) {
