@@ -73,7 +73,7 @@ async function terraform() {
       console.log(stdout)
     });
     console.log(execSync('terraform show -no-color plan.tfplan').toString());
-    core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan'));
+    core.setOutput('tfplan',execSync('terraform show -no-color plan.tfplan').toString());
   } catch (error) {
     core.setFailed(error.message);
   }
