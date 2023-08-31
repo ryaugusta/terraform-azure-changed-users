@@ -73,7 +73,7 @@ async function terraform() {
   try {
     await exec.exec('terraform show -no-color -json plan.tfplan > plan.json')
     await exec.exec('terraform show -no-color plan.tfplan > tfplan.txt')
-    core.setOutput('tfplan', tfplanPath);
+    core.setOutput('tfplan', text);
   } catch (error) {
     core.setFailed(error.message);
   }
