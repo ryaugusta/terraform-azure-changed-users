@@ -47940,7 +47940,7 @@ const { TokenCredentialAuthenticationProvider } = __nccwpck_require__(2798);
 const { ClientSecretCredential } = __nccwpck_require__(9516);
 const core = __nccwpck_require__(7334);
 const filePath= core.getInput('file-path');
-const { exec } = __nccwpck_require__(2081);
+const { exec, execSync } = __nccwpck_require__(2081);
 
 function run() {
 
@@ -48004,7 +48004,7 @@ function get_changes(changeset, group_name) {
 
 function terraform() {
   try {
-    exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
+    execSync('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
       if (err) {
         core.setFailed(err.message);
         return;
@@ -48013,7 +48013,7 @@ function terraform() {
       console.log('plan.json created');
     });
 
-    exec('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
+    execSync('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
       if (err) {
         core.setFailed(err.message);
         return;
@@ -48022,7 +48022,7 @@ function terraform() {
       core.setOutput('tfplan', stdout);
     });
 
-    exec("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
+    execSync("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
       if (err) {
         core.setFailed(err.message);
         return;
