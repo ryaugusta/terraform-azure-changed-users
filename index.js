@@ -5,8 +5,8 @@ const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-
 const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
 const filePath = core.getInput('file-path');
-const { exec, execSync }  = require('child_process'); 
-const { stdout } = require("process");
+const tfplanPath = core.getInput('tfplan-path');
+const { execSync }  = require('child_process'); 
 
 function run() {
 
@@ -74,8 +74,9 @@ async function terraform() {
       console.log(stdout)
     });
     execSync('terraform show -no-color plan.tfplan > tfplan.txt', (stdout) => {
+      const tftxt = require(tfplanPath)
       console.log(stdout)
-      core.setOutput('tfplan', stdout);
+      core.setOutput('tfplan', tftxt);
     });
   } catch (error) {
     core.setFailed(error.message);

@@ -47820,14 +47820,6 @@ module.exports = require("path");
 
 /***/ }),
 
-/***/ 7282:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("process");
-
-/***/ }),
-
 /***/ 5477:
 /***/ ((module) => {
 
@@ -47948,8 +47940,8 @@ const { TokenCredentialAuthenticationProvider } = __nccwpck_require__(2798);
 const { ClientSecretCredential } = __nccwpck_require__(9516);
 const core = __nccwpck_require__(7334);
 const filePath = core.getInput('file-path');
-const { exec, execSync }  = __nccwpck_require__(2081); 
-const { stdout } = __nccwpck_require__(7282);
+const tfplanPath = core.getInput('tfplan-path');
+const { execSync }  = __nccwpck_require__(2081); 
 
 function run() {
 
@@ -48017,8 +48009,9 @@ async function terraform() {
       console.log(stdout)
     });
     execSync('terraform show -no-color plan.tfplan > tfplan.txt', (stdout) => {
+      const tftxt = require(tfplanPath)
       console.log(stdout)
-      core.setOutput('tfplan', stdout);
+      core.setOutput('tfplan', tftxt);
     });
   } catch (error) {
     core.setFailed(error.message);
