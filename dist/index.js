@@ -48004,11 +48004,9 @@ function get_changes(changeset, group_name) {
 
 async function terraform() {
   try {
-    execSync('terraform show -no-color -json plan.tfplan > plan.json', (stdout) => {
-      console.log(stdout)
-    });
-    console.log(execSync('terraform show -no-color plan.tfplan').toString());
-    core.setOutput('tfplan',execSync('terraform show -no-color plan.tfplan').toString());
+    execSync('terraform show -no-color -json plan.tfplan > plan.json');
+    console.log(execSync('terraform show plan.tfplan').toString());
+    core.setOutput('tfplan', execSync('terraform show plan.tfplan').toString());
   } catch (error) {
     core.setFailed(error.message);
   }
