@@ -48022,14 +48022,14 @@ function terraform() {
       core.setOutput('tfplan', stdout);
     });
 
-    execSync("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
-      if (err) {
-        core.setFailed(err.message);
-        return;
-      }
-      console.log(stdout);
-      core.setOutput('tfplan', stdout);
-    });
+    // execSync("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
+    //   if (err) {
+    //     core.setFailed(err.message);
+    //     return;
+    //   }
+    //   console.log(stdout);
+    //   core.setOutput('tfplan', stdout);
+    // });
   } catch (error) {
     core.setFailed(error.message);
   }
