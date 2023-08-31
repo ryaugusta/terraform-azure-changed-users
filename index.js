@@ -21,8 +21,8 @@ function run() {
     authProvider,
   });
 
-  terraform_show();
-  
+  terraform();
+
   groups.forEach((group_name) => { 
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
