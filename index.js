@@ -4,8 +4,8 @@ const { Client } = require("@microsoft/microsoft-graph-client");
 const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials");
 const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
-const filePath= core.getInput('file-path');
-const { exec, execSync } = require('child_process');
+const filePath = core.getInput('file-path');
+const { execSync } = require('child_process');
 
 function run() {
 
@@ -84,7 +84,7 @@ function terraform() {
         return;
       }
       console.log(stdout);
-      core.setOutput('tfplan', stdout);
+      core.setOutput('tfplan', tfplan.txt);
     });
 
     // execSync("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {

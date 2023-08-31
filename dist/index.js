@@ -47939,8 +47939,8 @@ const { Client } = __nccwpck_require__(2559);
 const { TokenCredentialAuthenticationProvider } = __nccwpck_require__(2798);
 const { ClientSecretCredential } = __nccwpck_require__(9516);
 const core = __nccwpck_require__(7334);
-const filePath= core.getInput('file-path');
-const { exec, execSync } = __nccwpck_require__(2081);
+const filePath = core.getInput('file-path');
+const { execSync } = __nccwpck_require__(2081);
 
 function run() {
 
@@ -48019,7 +48019,7 @@ function terraform() {
         return;
       }
       console.log(stdout);
-      core.setOutput('tfplan', stdout);
+      core.setOutput('tfplan', tfplan.txt);
     });
 
     // execSync("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
