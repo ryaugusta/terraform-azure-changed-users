@@ -47942,8 +47942,10 @@ const core = __nccwpck_require__(7334);
 const filePath= core.getInput('file-path');
 const { exec } = __nccwpck_require__(2081);
 
-
 function run() {
+
+  terraform();
+
   const tenantId = process.env.ARM_TENANT_ID ||  core.getInput('tenant-id');
   const clientId = process.env.ARM_CLIENT_ID || core.getInput('client-id');
   const clientSecret = process.env.ARM_CLIENT_SECRET || core.getInput('client-secret') 
@@ -47955,8 +47957,6 @@ function run() {
     debugLogging: true,
     authProvider,
   });
-
-  terraform();
 
   groups.forEach((group_name) => { 
   const before_members = get_changes('before', group_name)
@@ -48003,33 +48003,36 @@ function get_changes(changeset, group_name) {
 }
 
 function terraform() {
-  
-  exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
-    if (err) {
-      core.setFailed(err.message);
-      return;
-    }
-    console.log(stdout);
-    console.log('plan.json created');
-  });
+  try {
+    exec('terraform show -no-color -json plan.tfplan > plan.json', (err, stdout) => {
+      if (err) {
+        core.setFailed(err.message);
+        return;
+      }
+      console.log(stdout);
+      console.log('plan.json created');
+    });
 
-  exec('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
-    if (err) {
-      core.setFailed(err.message);
-      return;
-    }
-    console.log(stdout);
-    core.setOutput('tfplan', stdout);
-  });
+    exec('terraform show -no-color plan.tfplan > tfplan.txt', (err, stdout) => {
+      if (err) {
+        core.setFailed(err.message);
+        return;
+      }
+      console.log(stdout);
+      core.setOutput('tfplan', stdout);
+    });
 
-  exec("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
-    if (err) {
-      core.setFailed(err.message);
-      return;
-    }
-    console.log(stdout);
-    core.setOutput('tfplan', stdout);
-  });
+    exec("sed -i -E 's/^([[:space:]]+)([-+])/\x02\x01/g' tfplan.txt", (err, stdout) => {
+      if (err) {
+        core.setFailed(err.message);
+        return;
+      }
+      console.log(stdout);
+      core.setOutput('tfplan', stdout);
+    });
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
 
 run();
