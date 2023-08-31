@@ -5,7 +5,8 @@ const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-
 const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
 const filePath = core.getInput('file-path');
-const exec = require('@actions/exec');
+const { exec, execSync }  = require('child_process'); 
+const { stdout } = require("process");
 
 function run() {
 
@@ -69,8 +70,13 @@ function get_changes(changeset, group_name) {
 
 async function terraform() {
   try {
-    exec('terraform show -no-color -json plan.tfplan > plan.json')
-    core.setOutput('tfplan', (exec('terraform show -no-color plan.tfplan')))
+    execSync('terraform show -no-color -json plan.tfplan > plan.json', (stdout) => {
+      console.log(stdout)
+    });
+    execSync('terraform show -no-color plan.tfplan > tfplan.txt', (stdout) => {
+      console.log(stdout)
+      core.setOutput('tfplan', stdout);
+    });
   } catch (error) {
     core.setFailed(error.message);
   }
