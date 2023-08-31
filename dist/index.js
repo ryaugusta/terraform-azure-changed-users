@@ -48007,10 +48007,8 @@ async function terraform() {
     execSync('terraform show -no-color -json plan.tfplan > plan.json', (stdout) => {
       console.log(stdout)
     });
-    execSync('terraform show -no-color plan.tfplan > tfplan.txt');
-    execSync('cat tfplan.txt');
-    const out = execSync('cat tfplan.txt');
-    core.setOutput('tfplan', out);
+    console.log(execSync('terraform show -no-color plan.tfplan'));
+    core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan'));
   } catch (error) {
     core.setFailed(error.message);
   }
