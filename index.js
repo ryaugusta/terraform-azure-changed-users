@@ -23,12 +23,14 @@ function run() {
     authProvider,
   });
 
+  const group_id = get_group_id('after', groups)
+  const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
+
   groups.forEach((group_name) => { 
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
   const data = diff.diffArrays(before_members, after_members);
   const group_id = get_group_id('after', group_name)
-  const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
 
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
