@@ -6,6 +6,7 @@ const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
 const filePath = core.getInput('file-path');
 const { execSync }  = require('child_process'); 
+const exec = require('@actions/exec');
 
 function run() {
 
@@ -28,16 +29,20 @@ function run() {
   const after_members = get_changes('after', group_name)
   const data = diff.diffArrays(before_members, after_members);
 
+  
+
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
+      const group_display_name = client.api(`/groups/${group_name}`).select("displayName").get().then((res) => { res.displayName });
+
       if(part.added) {
         client
           .api(`/users/${value}`)
           .select("displayName")
           .get()
           .then((res) => {
-            console.log('+ ', res.displayName);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_name}`);
+            console.log(`+ ${res.displayName} to ${group_display_name}`);
+            core.setOutput('changes', `+ ${res.displayName} to ${group_display_name}`);
           })
           .catch((err) => {
             console.log(err);
@@ -49,8 +54,8 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log('- ', res.displayName);
-            core.setOutput('changes', `- ${res.displayName} from ${group_name}`);
+            console.log(`- ${res.displayName} from ${group_display_name}`);
+            core.setOutput('changes', `- ${res.displayName} from ${group_display_name}`);
           })
           .catch((err) => {
             console.log(err);
@@ -68,13 +73,35 @@ function get_changes(changeset, group_name) {
 }
 
 async function terraform() {
+  // try {
+  //   execSync('terraform show -no-color -json plan.tfplan > plan.json');
+  //   console.log(execSync('terraform show -no-color plan.tfplan').toString());
+  //   core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan').toString());
+  // } catch (error) {
+  //   core.setFailed(error.message);
+  // }
+
+  let output = '';
+  let error = '';
+
+  const options = {};
+  options.listeners = {
+    stdout: (data) => {
+      output += data.toString();
+    },
+    stderr: (data) => {
+      error += data.toString();
+    }
+  };
+
   try {
-    execSync('terraform show -no-color -json plan.tfplan > plan.json');
-    console.log(execSync('terraform show -no-color plan.tfplan').toString());
-    core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan').toString());
+    await exec.exec('terraform show -no-color -json plan.tfplan > plan.json', options);
+    await exec.exec('terraform show -no-color plan.tfplan', options);
+    core.info(options);
+
   } catch (error) {
     core.setFailed(error.message);
-  }
+  } 
 }
 
 run();

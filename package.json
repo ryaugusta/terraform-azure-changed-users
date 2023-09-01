@@ -17,6 +17,5 @@
     "colors": "^1.4.0",
     "diff": "^5.1.0",
     "isomorphic-fetch": "^3.0.0"
-  },
-  "devDependencies": {}
+  }
 }
