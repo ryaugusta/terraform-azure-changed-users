@@ -6,7 +6,6 @@ const { ClientSecretCredential } = require("@azure/identity");
 const core = require('@actions/core');
 const filePath = core.getInput('file-path');
 const { execSync }  = require('child_process'); 
-const exec = require('@actions/exec');
 
 function run() {
 
@@ -28,8 +27,6 @@ function run() {
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
   const data = diff.diffArrays(before_members, after_members);
-
-  
 
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
@@ -66,42 +63,20 @@ function run() {
 }
 
 function get_changes(changeset, group_name) {
-    const plan = require(filePath)
-    return  plan.resource_changes
-      .filter((change)=> change.address == `azuread_group.${group_name}`)[0]
-      .change[changeset].members
+  const plan = require(filePath)
+  return  plan.resource_changes
+    .filter((change)=> change.address == `azuread_group.${group_name}`)[0]
+    .change[changeset].members
 }
 
-async function terraform() {
-  // try {
-  //   execSync('terraform show -no-color -json plan.tfplan > plan.json');
-  //   console.log(execSync('terraform show -no-color plan.tfplan').toString());
-  //   core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan').toString());
-  // } catch (error) {
-  //   core.setFailed(error.message);
-  // }
-
-  let output = '';
-  let error = '';
-
-  const options = {};
-  options.listeners = {
-    stdout: (data) => {
-      output += data.toString();
-    },
-    stderr: (data) => {
-      error += data.toString();
-    }
-  };
-
+function terraform() {
   try {
-    await exec.exec('terraform show -no-color -json plan.tfplan > plan.json', options);
-    await exec.exec('terraform show -no-color plan.tfplan', options);
-    core.info(options);
-
+    execSync('terraform show -no-color -json plan.tfplan > plan.json');
+    console.log(execSync('terraform show -no-color plan.tfplan').toString());
+    core.setOutput('tfplan', execSync('terraform show -no-color plan.tfplan').toString());
   } catch (error) {
     core.setFailed(error.message);
-  } 
+  }
 }
 
 run();
