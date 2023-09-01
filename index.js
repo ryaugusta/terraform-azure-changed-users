@@ -23,9 +23,6 @@ function run() {
     authProvider,
   });
 
-  const group_id = get_group_id('after', groups)
-  const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
-
   groups.forEach((group_name) => { 
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
@@ -33,14 +30,16 @@ function run() {
 
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
+      const group_id = get_group_id('after', group_name)
+      client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
       if(part.added) {
         client
           .api(`/users/${value}`)
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(`+ ${res.displayName} to ${group_display_name}`);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_display_name}`);
+            console.log(`+ ${res.displayName} to ${group_name}`);
+            core.setOutput('changes', `+ ${res.displayName} to ${group_name}`);
           })
           .catch((err) => {
             console.log(err);
@@ -52,8 +51,8 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(`- ${res.displayName} from ${group_display_name}`);
-            core.setOutput('changes', `- ${res.displayName} from ${group_display_name}`);
+            console.log(`- ${res.displayName} from ${group_name}`);
+            core.setOutput('changes', `- ${res.displayName} from ${group_name}`);
           })
           .catch((err) => {
             console.log(err);
