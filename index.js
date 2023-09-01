@@ -27,11 +27,11 @@ function run() {
   const before_members = get_changes('before', group_name)
   const after_members = get_changes('after', group_name)
   const data = diff.diffArrays(before_members, after_members);
+  const group_id = get_group_id('after', group_name)
+  const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
 
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
-      const group_display_name = client.api(`/groups/${group_name}`).select("displayName").get().then((res) => { res.displayName });
-
       if(part.added) {
         client
           .api(`/users/${value}`)
@@ -67,6 +67,12 @@ function get_changes(changeset, group_name) {
   return  plan.resource_changes
     .filter((change)=> change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].members
+}
+
+function get_group_id(changeset, group_name) {
+  const plan = require("./plan.json")
+  return plan.resource_changes
+        .filter((change => change.address == `azuread_group.${group_name}`))[0].change[changeset].id
 }
 
 function terraform() {

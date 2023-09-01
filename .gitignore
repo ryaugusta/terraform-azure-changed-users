@@ -130,3 +130,5 @@ out
 .pnp.*
 
 dist/xdg-open
+plan.json
+test.js
