@@ -28,10 +28,10 @@ function run() {
   const after_members = get_changes('after', group_name)
   const data = diff.diffArrays(before_members, after_members);
   const group_id = get_group_id('after', group_name)
-  const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
-
+  
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
+      const group_display_name = client.api(`/groups/${group_id}`).select("displayName").get().then((res) => { console.log(res.displayName)});
       if(part.added) {
         client
           .api(`/users/${value}`)
