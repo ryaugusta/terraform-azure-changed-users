@@ -47980,34 +47980,35 @@ async function run() {
   let group_data = await Promise.all(groupNames)
 
   group_data.forEach((group_obj) => {
-    const part = group_obj.data
-    const value = part.value.join('\n').replace(/['"]+/g, '');
-    if(part.added) {
-      client
-        .api(`/users/${value}`)
-        .select("displayName")
-        .get()
-        .then((res) => {
-          console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
-          core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name})`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } 
-    else if(part.removed) {
-      client
-        .api(`/users/${value}`)
-        .select("displayName")
-        .get()
-        .then((res) => {
-          console.log(`- ${res.displayName} from ${group_obj.display_name}`);
-          core.setOutput('changes', `- ${res.displayName} from ${group_obj.display_name}`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    group_obj.data.forEach((part)=> {
+      const value = part.value.join('\n').replace(/['"]+/g, '');
+      if(part.added) {
+        client
+          .api(`/users/${value}`)
+          .select("displayName")
+          .get()
+          .then((res) => {
+            console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
+            core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name})`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } 
+      else if(part.removed) {
+        client
+          .api(`/users/${value}`)
+          .select("displayName")
+          .get()
+          .then((res) => {
+            console.log(`- ${res.displayName} from ${group_obj.display_name}`);
+            core.setOutput('changes', `- ${res.displayName} from ${group_obj.display_name}`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } 
+    })
   });
 }
 
