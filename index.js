@@ -7,7 +7,7 @@ const core = require('@actions/core');
 const filePath = core.getInput('file-path');
 const { execSync }  = require('child_process'); 
 
-function run() {
+async function run() {
 
   terraform();
 
@@ -23,52 +23,56 @@ function run() {
     authProvider,
   });
 
-  groups.forEach((group_name) => { 
+  let groupNames = groups.map((group_name) => {
+    const group_id = get_group_id('after', group_name)
     const before_members = get_changes('before', group_name)
     const after_members = get_changes('after', group_name)
     const data = diff.diffArrays(before_members, after_members);
 
-    let groupNames = groups.map((group_name) => {
-      const group_id = get_group_id('after', group_name)
-      return client.api(`/groups/${group_id}`)
+    return client.api(`/groups/${group_id}`)
+      .select("displayName")
+      .get()
+      .then((res) => {
+        return {
+          group_id: group_id,
+          display_name: res.displayName,
+          data: data
+        }
+      }
+    );
+  });
+
+  let group_data = await Promise.all(groupNames)
+
+  group_data.forEach((group_obj) => {
+    const part = group_obj.data
+    const value = part.value.join('\n').replace(/['"]+/g, '');
+    if(part.added) {
+      client
+        .api(`/users/${value}`)
         .select("displayName")
         .get()
         .then((res) => {
-          return res.displayName;
+          console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
+          core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name})`);
+        })
+        .catch((err) => {
+          console.log(err);
         });
-    });
-
-    Promise.all(groupNames)
-
-    data.forEach((part) => {
-      const value = part.value.join('\n').replace(/['"]+/g, '');
-      if(part.added) {
-        client
-          .api(`/users/${value}`)
-          .select("displayName")
-          .get()
-          .then((res) => {
-            console.log(`+ ${res.displayName} to github-engineers`);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_display_name()})`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+    } 
+    else if(part.removed) {
+      client
+        .api(`/users/${value}`)
+        .select("displayName")
+        .get()
+        .then((res) => {
+          console.log(`- ${res.displayName} from ${group_obj.display_name}`);
+          core.setOutput('changes', `- ${res.displayName} from ${group_obj.display_name}`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       } 
-      else if(part.removed) {
-        client
-          .api(`/users/${value}`)
-          .select("displayName")
-          .get()
-          .then((res) => {
-            console.log(`- ${res.displayName} from ${group_display_name()}`);
-            core.setOutput('changes', `- ${res.displayName} from ${group_display_name()}`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        } 
-    });
   });
 }
 
@@ -96,4 +100,4 @@ function terraform() {
   }
 }
 
-run();
+await run();
