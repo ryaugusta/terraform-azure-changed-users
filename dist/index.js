@@ -47989,7 +47989,7 @@ async function run() {
           .get()
           .then((res) => {
             console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name})`);
+            core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name}`);
           })
           .catch((err) => {
             console.log(err);
