@@ -100,4 +100,4 @@ function terraform() {
   }
 }
 
-await run();
+run();
