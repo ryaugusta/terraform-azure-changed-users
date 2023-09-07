@@ -24,9 +24,21 @@ function run() {
   });
 
   groups.forEach((group_name) => { 
-  const before_members = get_changes('before', group_name)
-  const after_members = get_changes('after', group_name)
-  const data = diff.diffArrays(before_members, after_members);
+    const before_members = get_changes('before', group_name)
+    const after_members = get_changes('after', group_name)
+    const data = diff.diffArrays(before_members, after_members);
+
+    let groupNames = groups.map((group_name) => {
+      const group_id = get_group_id('after', group_name)
+      return client.api(`/groups/${group_id}`)
+        .select("displayName")
+        .get()
+        .then((res) => {
+          return res.displayName;
+        });
+    });
+
+    Promise.all(groupNames)
 
     data.forEach((part) => {
       const value = part.value.join('\n').replace(/['"]+/g, '');
@@ -36,8 +48,8 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(`+ ${res.displayName} to ${group_name}`);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_name}`);
+            console.log(`+ ${res.displayName} to github-engineers`);
+            core.setOutput('changes', `+ ${res.displayName} to ${group_display_name()})`);
           })
           .catch((err) => {
             console.log(err);
@@ -49,8 +61,8 @@ function run() {
           .select("displayName")
           .get()
           .then((res) => {
-            console.log(`- ${res.displayName} from ${group_name}`);
-            core.setOutput('changes', `- ${res.displayName} from ${group_name}`);
+            console.log(`- ${res.displayName} from ${group_display_name()}`);
+            core.setOutput('changes', `- ${res.displayName} from ${group_display_name()}`);
           })
           .catch((err) => {
             console.log(err);
@@ -67,11 +79,12 @@ function get_changes(changeset, group_name) {
     .change[changeset].members
 }
 
-// function get_group_id(changeset, group_name) {
-//   const plan = require(filePath)
-//   return plan.resource_changes
-//         .filter((change => change.address == `azuread_group.${group_name}`))[0].change[changeset].id
-// }
+function get_group_id(changeset, group_name) {
+  const plan = require(filePath)
+  return plan.resource_changes
+    .filter((change => change.address == `azuread_group.${group_name}`))[0]
+    .change[changeset].id
+}
 
 function terraform() {
   try {
