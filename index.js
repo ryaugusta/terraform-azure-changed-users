@@ -49,7 +49,7 @@ async function run() {
     group_obj.data.forEach((part)=> {
       const value = part.value.join('\n').replace(/['"]+/g, '');
       if(part.added) {
-        users.append(
+        users.push(
           client
             .api(`/users/${value}`)
             .select("displayName")
@@ -64,7 +64,7 @@ async function run() {
           )
         } 
       else if(part.removed) {
-        users.append(
+        users.push(
           client
             .api(`/users/${value}`)
             .select("displayName")
