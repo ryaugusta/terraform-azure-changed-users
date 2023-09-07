@@ -43,40 +43,47 @@ async function run() {
   });
 
   let group_data = await Promise.all(groupNames)
+  let users = []
 
   group_data.forEach((group_obj) => {
     group_obj.data.forEach((part)=> {
       const value = part.value.join('\n').replace(/['"]+/g, '');
       if(part.added) {
-        client
-          .api(`/users/${value}`)
-          .select("displayName")
-          .get()
-          .then((res) => {
-            console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
-            core.setOutput('changes', `+ ${res.displayName} to ${group_obj.display_name}`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } 
+        users.append(
+          client
+            .api(`/users/${value}`)
+            .select("displayName")
+            .get()
+            .then((res) => {
+              console.log(`+ ${res.displayName} to ${group_obj.display_name}`);
+              return `+ ${res.displayName} to ${group_obj.display_name})`
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+          )
+        } 
       else if(part.removed) {
-        client
-          .api(`/users/${value}`)
-          .select("displayName")
-          .get()
-          .then((res) => {
-            console.log(`- ${res.displayName} from ${group_obj.display_name}`);
-            core.setOutput('changes', `- ${res.displayName} from ${group_obj.display_name}`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } 
-    })
-  });
+        users.append(
+          client
+            .api(`/users/${value}`)
+            .select("displayName")
+            .get()
+            .then((res) => {
+              console.log(`- ${res.displayName} from ${group_obj.display_name}`);
+              return `- ${res.displayName} from ${group_obj.display_name}`
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+          )
+        } 
+      })
+    });
+  let changes = await Promise.all(users)
+  core.setOutput('changes', changes.join('\n'));
 }
-
+  
 function get_changes(changeset, group_name) {
   const plan = require(filePath)
   return  plan.resource_changes
