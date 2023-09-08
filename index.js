@@ -46,9 +46,9 @@ async function run() {
   let users = []
 
   group_data.forEach((group_obj) => {
-    group_obj.data.forEach((part)=> {
-      const value = part.value.join('\n').replace(/['"]+/g, '');
-      if(part.added) {
+    group_obj.data.forEach((user)=> {
+      const value = user.value.join('\n').replace(/['"]+/g, '');
+      if(user.added) {
         users.push(
           client
             .api(`/users/${value}`)
@@ -63,7 +63,7 @@ async function run() {
             })
           )
         } 
-      else if(part.removed) {
+      else if(user.removed) {
         users.push(
           client
             .api(`/users/${value}`)
