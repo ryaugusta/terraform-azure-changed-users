@@ -13,7 +13,7 @@ It is recommended you use this action along with the [azure/login](https://githu
 | `client-id`     | ClientId of the Azure Service principal created.| _no_ |
 | `tenant-id`| TenantId of the Azure Service principal created.  | _no_ |
 | `client-secret`| ClientSecret of the Azure Service principal created. | *no*
-| `group_names` | List of `azuread_group` names, comma separated. | *yes*
+| `group_names` | List of `azuread_group` names, multi-line. | *yes*
 
 ## Outputs
 | Name      | Description  | 
@@ -34,7 +34,9 @@ on:
     id: get_changes
     uses: ryaugusta/terraform-azure-changed-users@v1
     with: 
-      group-names: 'github_engineers'
+      group-names: |
+        github_engineers
+        github_owners
 
   - name: Create PR comment
     uses: peter-evans/create-or-update-comment@v3
