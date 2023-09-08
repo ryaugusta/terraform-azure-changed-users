@@ -82,20 +82,22 @@ async function run() {
         } 
       })
     });
+
   let changes = await Promise.all(users)
-  
-  core.setOutput('changes', changes.join('\n') + group_display_names.join('\n'));
+  let changes_string = changes.join('\n') + '\n' + group_display_names.join('\n')
+
+  core.setOutput('changes', changes_string);
 }
   
 function get_changes(changeset, group_name) {
-  const plan = require(filePath)
+  const plan = require('./plan.json')
   return  plan.resource_changes
     .filter((change) => change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].members
 }
 
 function get_group_id(changeset, group_name) {
-  const plan = require(filePath)
+  const plan = require('./plan.json')
   return plan.resource_changes
     .filter((change) => change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].id
