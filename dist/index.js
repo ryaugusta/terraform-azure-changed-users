@@ -48029,7 +48029,7 @@ function get_changes(changeset, group_name) {
 function get_group_id(changeset, group_name) {
   const plan = require(filePath)
   return plan.resource_changes
-    .filter((change => change.address == `azuread_group.${group_name}`))[0]
+    .filter((change) => change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].id
 }
 
