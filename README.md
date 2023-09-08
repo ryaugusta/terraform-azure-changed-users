@@ -1,5 +1,5 @@
 # Terraform Azure Changes
- [![Build](https://github.com/ryaugusta/terraform-azure-changed-users/workflows/Build/badge.svg)](https://github.com/ryaugusta/terraform-azure-changed-users/actions?query=workflow%3ACI)
+ [![Build](https://github.com/ryaugusta/terraform-azure-changed-users/workflows/Build/badge.svg)](https://github.com/ryaugusta/terraform-azure-changed-users/actions?query=workflow%3ACI)  [![Release](https://github.com/ryaugusta/terraform-azure-changed-users/workflows/Release/badge.svg)](https://github.com/ryaugusta/terraform-azure-changed-users/actions?query=workflow%3ACI)  
 This action will run a terraform plan and output the changes to be digestable and added to a pull request comment.
 The current states supports `azuread_group` integration, and will lookup what groups were added, removed, or changed, as well as what users were added, removed, or changed from the provided azuread groups.
 

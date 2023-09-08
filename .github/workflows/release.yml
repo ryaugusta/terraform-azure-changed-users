@@ -1,4 +1,4 @@
-name: CI
+name: Release
 
 on:
   workflow_dispatch
@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  ci:
+  release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
