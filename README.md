@@ -1,8 +1,7 @@
 # Terraform Azure Changes
+ [![Build](https://github.com/ryaugusta/terraform-azure-changed-users/workflows/Build/badge.svg)](https://github.com/ryaugusta/terraform-azure-changed-users/actions?query=workflow%3ACI)
 This action will run a terraform plan and output the changes to be digestable and added to a pull request comment.
 The current states supports `azuread_group` integration, and will lookup what groups were added, removed, or changed, as well as what users were added, removed, or changed from the provided azuread groups.
-
-
 
 ## Inputs
 It is recommended you use this action along with the [azure/login](https://github.com/Azure/login) action, as it requires you to set the `ARM` environment variables: (`ARM_CLIENT_ID`, `ARM_TENANT_ID`, `ARM_CLIENT_SECRET`).  If you do not provide these variables, you will need to provide them as inputs to this action.
