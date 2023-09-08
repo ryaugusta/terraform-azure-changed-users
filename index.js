@@ -44,8 +44,10 @@ async function run() {
 
   let group_data = await Promise.all(groupNames)
   let users = []
+  let group_display_names = []
 
   group_data.forEach((group_obj) => {
+    group_display_names.push(group_obj.display_name);
     group_obj.data.forEach((user)=> {
       const value = user.value.join('\n').replace(/['"]+/g, '');
       if(user.added) {
@@ -81,7 +83,8 @@ async function run() {
       })
     });
   let changes = await Promise.all(users)
-  core.setOutput('changes', changes.join('\n'));
+  
+  core.setOutput('changes', changes.join('\n') + group_display_names.join('\n'));
 }
   
 function get_changes(changeset, group_name) {
