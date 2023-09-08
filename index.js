@@ -14,7 +14,8 @@ async function run() {
   const tenantId = process.env.ARM_TENANT_ID ||  core.getInput('tenant-id');
   const clientId = process.env.ARM_CLIENT_ID || core.getInput('client-id');
   const clientSecret = process.env.ARM_CLIENT_SECRET || core.getInput('client-secret') 
-  const groups = core.getInput('group-names').split(',');
+  const groups = core.getMultilineInput('group-names');
+
   
   const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
   const authProvider = new TokenCredentialAuthenticationProvider(credential, { scopes: ['.default'] });
@@ -90,14 +91,14 @@ async function run() {
 }
   
 function get_changes(changeset, group_name) {
-  const plan = require('./plan.json')
+  const plan = require(filePath)
   return  plan.resource_changes
     .filter((change) => change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].members
 }
 
 function get_group_id(changeset, group_name) {
-  const plan = require('./plan.json')
+  const plan = require(filePath)
   return plan.resource_changes
     .filter((change) => change.address == `azuread_group.${group_name}`)[0]
     .change[changeset].id
