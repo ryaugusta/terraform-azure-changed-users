@@ -18,8 +18,8 @@ It is recommended you use this action along with the [azure/login](https://githu
 ## Outputs
 | Name      | Description  | 
 | :-------- | :----------  |
-| `changes`` | List of changes to be added to a pull request comment. |
-| `tfplan`` | Terraform plan output. |
+| `changes` | List of changes to be added to a pull request comment. |
+| `tfplan` | Terraform plan output. |
 
 ## Example usage
 ```yaml
