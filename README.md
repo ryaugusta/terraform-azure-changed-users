@@ -41,7 +41,6 @@ on:
     with:
     issue-number: ${{ github.event.number }}
     body: |
-        ## ${{ matrix.env  }} Plan
         ```diff
         ${{ steps.get_changes.outputs.tfplan }}
         ```
